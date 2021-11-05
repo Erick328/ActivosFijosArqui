@@ -14,9 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import modelo.mBien;
-//import modelo.mBienDAO;
 import modelo.mRevisionTecnica;
-//import modelo.mRevisionTecnicaDAO;
 import vista.vRevisionTecnica;
 
 /**

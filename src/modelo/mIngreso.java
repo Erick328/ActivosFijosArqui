@@ -102,7 +102,7 @@ public class mIngreso {
             ps.setInt(3, ingreso.getIdOperador());
             ps.executeUpdate();
         } catch (Exception e) {
-            System.err.println(e);
+            System.err.println("mIngresos"+e);
         }
         return 1;
     }
@@ -129,14 +129,14 @@ public class mIngreso {
         return respuesta;
     }
     public void delete(int id) {
-        String sql = "delete from detalleingreso where id=" + id;
-        //String sql2 = "update bien set bien.estado='R' where bien.id=" + idBien;
+        String sql = "delete from ingreso where id=" + id;
+        //String sql2 = "update bien,detelleingreso set bien.estado='R' where detalleingreso.id=" + id+"and bien.id=detalleingreso.idBien";
         try {
             con = conectar.getConnection();
-            ps = con.prepareStatement(sql);
-            ps.executeUpdate();
             //ps=con.prepareStatement(sql2);
             //ps.executeUpdate();
+            ps = con.prepareStatement(sql);
+            ps.executeUpdate();
         } catch (Exception e) {
             System.err.println(e);
         }

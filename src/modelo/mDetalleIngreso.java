@@ -16,6 +16,7 @@ import java.util.List;
  * @author Erick Vidal
  */
 public class mDetalleIngreso {
+    int id;
     int idIngreso;
     int idBien;
 
@@ -27,11 +28,16 @@ public class mDetalleIngreso {
     public mDetalleIngreso() {
     }
 
-    public mDetalleIngreso(int idIngreso, int idBien) {
+    public mDetalleIngreso(int id,int idIngreso, int idBien) {
+        this.id=id;
         this.idIngreso = idIngreso;
         this.idBien = idBien;
     }
 
+    public int getId(){
+        return id;
+    }
+    
     public int getIdIngreso() {
         return idIngreso;
     }
@@ -39,7 +45,9 @@ public class mDetalleIngreso {
     public int getIdBien() {
         return idBien;
     }
-
+    public void setId(int id){
+        this.id=id;
+    }
     public void setIdIngreso(int idIngreso) {
         this.idIngreso = idIngreso;
     }
@@ -68,7 +76,7 @@ public class mDetalleIngreso {
     }
     
     public int agregar(mDetalleIngreso detalleIngreso) {
-        String sql = "insert into ingreso(fechaIngreso,descripcion,idOperador) values(?,?,?)";
+        String sql = "insert into detalleingreso(idIngreso,idBien) values(?,?)";
         String sql2 = "update bien set bien.estado='I' where bien.id=" + detalleIngreso.getIdBien();
         try {
             con = conectar.getConnection();
@@ -79,18 +87,19 @@ public class mDetalleIngreso {
             ps=con.prepareStatement(sql2);
             ps.executeUpdate();
         } catch (Exception e) {
-            System.err.println(e);
+            System.err.println("mDetalle"+e);
         }
         return 1;
     }
     public void delete(int id) {
-        //String sql = "delete from detalleingreso where id=" + id;
-        String sql2 = "update bien set bien.estado='N' where bien.id=" + id;
+        String sql = "delete from detalleingreso where idIngreso=" + id;
+        //String sql2 = "update bien set bien.estado='N' where bien.id=" + detalleIngreso.idBien;
         try {
             con = conectar.getConnection();
-            ps = con.prepareStatement(sql2);
+            //ps = con.prepareStatement(sql2);
+            //ps.executeUpdate();
+            ps=con.prepareStatement(sql);
             ps.executeUpdate();
-
         } catch (Exception e) {
             System.err.println(e);
         }

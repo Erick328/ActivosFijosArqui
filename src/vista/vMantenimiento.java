@@ -70,6 +70,10 @@ public class vMantenimiento extends javax.swing.JFrame {
 
         txtId.setEditable(false);
 
+        txtFechaInicio.setDateFormatString("yyyy-MM-dd");
+
+        txtFechaFin.setDateFormatString("yyyy-MM-dd");
+
         jLabel7.setText("REVISION TECNICA :");
 
         btnGuardar.setText("Guardar");

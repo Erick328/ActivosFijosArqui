@@ -4,6 +4,7 @@ package modelo;
 //import com.mysql.jdbc.Connection;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 /**
  *
@@ -18,7 +19,7 @@ public class Conexion {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             con=DriverManager.getConnection(url,user,pass);
-        } catch (Exception e) {
+        } catch (ClassNotFoundException | SQLException e) {
             System.err.println(e);
         }
         return con;

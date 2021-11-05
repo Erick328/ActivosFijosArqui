@@ -59,6 +59,8 @@ public class vBaja extends javax.swing.JFrame {
 
         txtId.setEditable(false);
 
+        txtFecha.setDateFormatString("yyyy-MM-dd");
+
         jLabel4.setText("REVISION TECNICA :");
 
         btnGuardar.setText("Guardar");

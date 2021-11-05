@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package controlador;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -13,73 +14,69 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import modelo.mBien;
-import modelo.mDetalleIngreso;
-import modelo.mIngreso;
+import modelo.mDetalleEgreso;
+import modelo.mEgreso;
 import modelo.mOperador;
-
-import vista.vIngreso;
+import vista.vEgreso;
 
 /**
  *
  * @author Erick Vidal
  */
-public class cIngreso implements ActionListener {
-
-    mIngreso ingreso = new mIngreso();
-    vIngreso vista = new vIngreso();
+public class cEgreso implements ActionListener{
+    mEgreso egreso = new mEgreso();
+    vEgreso vista = new vEgreso();
     mBien bien = new mBien();
     mOperador operador = new mOperador();
-    mDetalleIngreso detalleIngreso = new mDetalleIngreso();
+    mDetalleEgreso detalleEgreso = new mDetalleEgreso();
     ArrayList<mOperador> listaOperador = (ArrayList<mOperador>) operador.listar();
-    DefaultTableModel modeloIngreso = new DefaultTableModel();
+    DefaultTableModel modeloEgreso = new DefaultTableModel();
     DefaultTableModel modeloBien=new DefaultTableModel();
     List<mBien> listaBienes = new ArrayList<>();
     
-
-    public cIngreso(vIngreso v) {
+    public cEgreso(vEgreso v) {
         this.vista = v;
         this.vista.btnGuardar.addActionListener(this);
         this.vista.btnEditar.addActionListener(this);
         this.vista.btnActualizar.addActionListener(this);
         this.vista.btnEliminar.addActionListener(this);
-        this.vista.btnBien.addActionListener(this);
+        this.vista.btnAgregarBien.addActionListener(this);
         this.vista.btnEliminarBien.addActionListener(this);
         listarBien(vista.TablaBien);
         llenarOperador();
-        listarIngreso(vista.TablaIngreso);
+        listarEgreso(vista.TablaEgreso);
     }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == vista.btnGuardar) {
-            agregarIngreso();
+            agregarEgreso();
             limpiarTabla();
             listarBien(vista.TablaBien);
-            listarIngreso(vista.TablaIngreso);
+            listarEgreso(vista.TablaEgreso);
         }
         if (e.getSource() == vista.btnActualizar) {
             actualizar();
             limpiarTabla();
             listarBien(vista.TablaBien);
-            listarIngreso(vista.TablaIngreso);
+            listarEgreso(vista.TablaEgreso);
         }
-        if (e.getSource()==vista.btnBien) {
+        if (e.getSource()==vista.btnAgregarBien) {
             agregarBien();
             limpiarTabla();
-            listarIngreso(vista.TablaIngreso);
+            listarEgreso(vista.TablaEgreso);
             listarBien(vista.TablaBien);
             
         }
         if (e.getSource()==vista.btnEditar) {
-            int fila=vista.TablaIngreso.getSelectedRow();
+            int fila=vista.TablaEgreso.getSelectedRow();
             if (fila==-1) {
                 JOptionPane.showMessageDialog(vista, "PORFAVOR SELECCIONE UNA FILA");
             }else{
-                int id=Integer.parseInt((String)vista.TablaIngreso.getValueAt(fila, 0).toString());
-                Date fechaIngreso=(Date)vista.TablaIngreso.getValueAt(fila, 1);
-                String descripcion=(String)vista.TablaIngreso.getValueAt(fila, 2);
+                int id=Integer.parseInt((String)vista.TablaEgreso.getValueAt(fila, 0).toString());
+                Date fechaEgreso=(Date)vista.TablaEgreso.getValueAt(fila, 1);
+                String descripcion=(String)vista.TablaEgreso.getValueAt(fila, 2);
                 vista.txtId.setText(""+id);
-                vista.txtFechaIngreso.setDate(fechaIngreso);
+                vista.txtFechaEgreso.setDate(fechaEgreso);
                 vista.txtDescripcion.setText(descripcion);
             }
         }
@@ -87,16 +84,16 @@ public class cIngreso implements ActionListener {
             delete();
             limpiarTabla();
             listarBien(vista.TablaBien);
-            listarIngreso(vista.TablaIngreso);
+            listarEgreso(vista.TablaEgreso);
         }
         if (e.getSource()==vista.btnEliminarBien) {
             eliminarBien();
             limpiarTabla();
             listarBien(vista.TablaBien);
-            listarIngreso(vista.TablaIngreso);
+            listarEgreso(vista.TablaEgreso);
         }
     }
-
+    
     private void listarBien(JTable TablaBien) {
         modeloBien = (DefaultTableModel) TablaBien.getModel();
         List<mBien> lista = bien.listar();
@@ -121,35 +118,32 @@ public class cIngreso implements ActionListener {
         }
     }
 
-    private void agregarIngreso() {
-        Date fechaIngreso = vista.txtFechaIngreso.getDate();
+    private void agregarEgreso() {
+        Date fechaIngreso = vista.txtFechaEgreso.getDate();
         String descripcion = vista.txtDescripcion.getText();
         int idOperador = buscar(vista.cboOperador.getItemAt(vista.cboOperador.getSelectedIndex()));
-        ingreso.setFechaIngreso(new java.sql.Date(fechaIngreso.getYear(), fechaIngreso.getMonth(), fechaIngreso.getDay()));
-        ingreso.setDescripcion(descripcion);
-        ingreso.setIdOperador(idOperador);
-        int respuesta = ingreso.agregar(ingreso);
+        egreso.setFechaEgreso(new java.sql.Date(fechaIngreso.getYear(), fechaIngreso.getMonth(), fechaIngreso.getDay()));
+        egreso.setDescripcion(descripcion);
+        egreso.setIdOperador(idOperador);
+        int respuesta = egreso.agregar(egreso);
         agregarDetalleIngreso();
-        vista.areaBienes.setText("");
         if (respuesta == 1) {
-            JOptionPane.showMessageDialog(vista, "INGRESO AGREGADO CON EXITO!!!");
-        }else{
-            JOptionPane.showMessageDialog(vista, "ERROR, PORFAVOR INTENTE NUEVAMENTE");
+            JOptionPane.showMessageDialog(vista, "Egreso agregado correctamente");
         }
     }
     private void agregarDetalleIngreso(){
-        List<mIngreso> listaIngreso=ingreso.listar();
-        int idIngreso=listaIngreso.get(listaIngreso.size()-1).getId();
+        List<mEgreso> listaEgreso=egreso.listar();
+        int idEgreso=listaEgreso.get(listaEgreso.size()-1).getId();
         for (int i = 0; i < listaBienes.size(); i++) {
-            detalleIngreso.setIdIngreso(idIngreso);
-            detalleIngreso.setIdBien(listaBienes.get(i).getId());
-            detalleIngreso.agregar(detalleIngreso);
+            detalleEgreso.setIdEgreso(idEgreso);
+            detalleEgreso.setIdBien(listaBienes.get(i).getId());
+            detalleEgreso.agregar(detalleEgreso);
         }
         listaBienes = new ArrayList<>();
     }
     private void limpiarTabla() {
-        for (int i = 0; i < vista.TablaIngreso.getRowCount(); i++) {
-            modeloIngreso.removeRow(i);
+        for (int i = 0; i < vista.TablaEgreso.getRowCount(); i++) {
+            modeloEgreso.removeRow(i);
             i = i - 1;
         }
         for (int i = 0; i < vista.TablaBien.getRowCount(); i++) {
@@ -160,43 +154,43 @@ public class cIngreso implements ActionListener {
 
     private void actualizar() {
         int id=Integer.parseInt(vista.txtId.getText());
-        Date fechaIngreso=vista.txtFechaIngreso.getDate();
+        Date fechaEgreso=vista.txtFechaEgreso.getDate();
         String descripcion=vista.txtDescripcion.getText();
         int idOperador=buscar(vista.cboOperador.getItemAt(vista.cboOperador.getSelectedIndex()));
-        ingreso.setId(id);
-        ingreso.setFechaIngreso(new java.sql.Date(fechaIngreso.getYear(),fechaIngreso.getMonth(), fechaIngreso.getDay()));
-        ingreso.setDescripcion(descripcion);
-        ingreso.setIdOperador(idOperador);
-        int respuesta=ingreso.actualizar(ingreso);
+        egreso.setId(id);
+        egreso.setFechaEgreso(new java.sql.Date(fechaEgreso.getYear(),fechaEgreso.getMonth(), fechaEgreso.getDay()));
+        egreso.setDescripcion(descripcion);
+        egreso.setIdOperador(idOperador);
+        int respuesta=egreso.actualizar(egreso);
         if (respuesta==1) {
-            JOptionPane.showMessageDialog(vista, "INGRESO ACTUALIZADO CON EXITO");
+            JOptionPane.showMessageDialog(vista, "EGRESO ACTUALIZADO CON EXITO");
         }else{
             JOptionPane.showMessageDialog(vista, "ERROR, POR FAVOR INTENTE NUEVAMENTE");
         }
     }
 
     private void delete() {
-        int fila=vista.TablaIngreso.getSelectedRow();
+        int fila=vista.TablaEgreso.getSelectedRow();
         if (fila==-1) {
             JOptionPane.showMessageDialog(vista, "Seleccione una fila");
         }else{
-            int id=Integer.parseInt((String)vista.TablaIngreso.getValueAt(fila, 0).toString());
-            detalleIngreso.delete(id);
-            ingreso.delete(id);
-            JOptionPane.showMessageDialog(vista, "Ingreso Eliminado con exito");
+            int id=Integer.parseInt((String)vista.TablaEgreso.getValueAt(fila, 0).toString());
+            detalleEgreso.delete(id);
+            egreso.delete(id);
+            JOptionPane.showMessageDialog(vista, "Egreso Eliminado con exito");
         }
     }
 
-    private void listarIngreso(JTable TablaIngreso) {
-        modeloIngreso = (DefaultTableModel) TablaIngreso.getModel();
-        List<mIngreso> lista = ingreso.listar();
+    private void listarEgreso(JTable TablaEgreso) {
+        modeloEgreso = (DefaultTableModel) TablaEgreso.getModel();
+        List<mEgreso> lista = egreso.listar();
         Object[] object = new Object[4];
         for (int i = 0; i < lista.size(); i++) {
             object[0] = lista.get(i).getId();
-            object[1] = lista.get(i).getFechaIngreso();
+            object[1] = lista.get(i).getFechaEgreso();
             object[2] = lista.get(i).getDescripcion();
             object[3] = lista.get(i).getIdOperador();
-            modeloIngreso.addRow(object);
+            modeloEgreso.addRow(object);
         }
     }
 
@@ -223,7 +217,7 @@ public class cIngreso implements ActionListener {
             String estado=vista.TablaBien.getValueAt(fila, 6).toString();
             int idCategoria =Integer.parseInt((String)vista.TablaBien.getValueAt(fila, 7).toString());
             mBien nuevoBien=new mBien(id, nombre, valorCompra, (java.sql.Date)fechaAdquisicion, vidaUtil, depreciacion, estado, idCategoria);
-            if ((nuevoBien.getEstado().equals("E") || nuevoBien.getEstado().equals("N")) && !contiene(nuevoBien.getId())) {
+            if ((nuevoBien.getEstado().equals("I") || nuevoBien.getEstado().equals("N")) && !contiene(nuevoBien.getId())) {
                 listaBienes.add(nuevoBien);
                 vista.areaBienes.setText(listaBienes.toString());
                 JOptionPane.showMessageDialog(vista, "Bien agregado con exito");
@@ -259,5 +253,6 @@ public class cIngreso implements ActionListener {
         }
         return false;
     }
-
+    
+    
 }
